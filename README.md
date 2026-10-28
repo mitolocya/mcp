@@ -1,3 +1,5 @@
+bu readme dosyasınıda duzenle yenı koda gore
+
 # PHP Model Context Protocol (MCP) Website Connector
 
 This project enables PHP-based websites or SaaS applications to securely connect with AI clients (such as Claude Desktop) using the **Model Context Protocol (MCP)** standard.
@@ -20,12 +22,12 @@ Add the following configuration block:
 
 ```json
 {
-  "mcpServers": {
-    "my-php-website": {
-      "command": "php",
-      "args": [
-        "/path/to/your/mcp-server.php"
-      ]
-    }
-  }
+  "mcpServers": {
+    "my-php-website": {
+      "command": "php",
+      "args": [
+        "/path/to/your/mcp-server.php"
+      ]
+    }
+  }
 }

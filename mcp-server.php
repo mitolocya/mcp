@@ -1,18 +1,36 @@
 <?php
 /**
- * Model Context Protocol (MCP) - PHP Sample Server
- * This script handles JSON-RPC requests and exposes website data/tools to AI clients.
+ * Model Context Protocol (MCP) - PHP Sample Server with API Key Protection
  */
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, X-API-Key');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
+
+// --- 1. API ANAHTARI KONTROLÜ ---
+// Belirleyeceğiniz gizli anahtar (Bunu istemci tarafında da kullanacaksınız)
+$SECRET_API_KEY = "BURAYA_GUCLU_BIR_ANAHTAR_YAZIN"; 
+
+// Gelen isteğin başlıklarından (headers) API anahtarını alalım
+$headers = getallheaders();
+$clientApiKey = $headers['X-API-Key'] ?? $_SERVER['HTTP_X_API_KEY'] ?? '';
+
+if ($clientApiKey !== $SECRET_API_KEY) {
+    http_response_code(401);
+    echo json_encode([
+        "jsonrpc" => "2.0",
+        "error" => ["code" => -32000, "message" => "Unauthorized: Geçersiz veya eksik API anahtarı."],
+        "id" => null
+    ]);
+    exit;
+}
+// ---------------------------------
 
 // Read incoming JSON-RPC request
 $input = file_get_contents('php://input');
@@ -71,7 +89,6 @@ switch ($method) {
     case 'tools/call':
         $toolName = $params['name'] ?? '';
         if ($toolName === 'get_site_stats') {
-            // Sample data response (You can hook your database or custom API here)
             $siteData = [
                 "status" => "active",
                 "active_users" => 1420,
